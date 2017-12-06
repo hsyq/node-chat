@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>聊天室</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+.container{
+  height: 100%;
+}
+.liaotiankuang {
+  height: 70%;
+}
+  #input {
+    width: 100%;
+  }
+</style>
+<body>
+ <div class="container">
+  <div class="row clearfix">
+    <div class="col-md-12 column">
+      <h3 class="text-success">
+       欢迎来到聊天室,<span id='username'><%=user%> </span>
+     </h3>
+   </div>
+ </div>
+ <div class="row clearfix liaotiankuang">
+  <div class="col-md-12 column">
+
+    <div class="panel panel-default">
+      <div class="panel-body">
+       <ul class="list-unstyled" id="chat_content">
+       </ul>
+     </div>
+   </div>
+
+ </div>
+</div>
+<div class="row clearfix caozuo">
+  <div class="col-md-12 column">
+
+
+   <div class="panel panel-default">
+      <div class="panel-body">
+         
+            <input type="text" class="form-control" id='input'>
+           
+   <button type="button" class="btn btn-default" id='send'>发送</button>
+     </div>
+   </div>
+   
+  </div>
+</div>
+</div>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript">
+  const socket = io();
+  $('#send').click(function(){
+      //console.log('333');
+      const val = $("#input").val();
+      const username = $('#username').html();
+      const msgObj = {
+        'user':username,
+        'content':val
+      }
+     // console.log(val);
+     socket.emit('client',msgObj);
+     $("#input").val('');
+   });
+
+  socket.on("client",function(msg){
+    $("#chat_content").append("<li><b>"+msg.user+":</b>"+ msg.content + "</li>");
+  });
+
+</script>
+</body>
+</html>
