@@ -14,10 +14,10 @@
 </style>
 <body>
  <div class="container">
-   <h1>登录</h1>
+   <h1>注册</h1>
 
 
-   <form class="form-horizontal" role="form">
+   <form class="form-horizontal" role="form" onsubmit="return false">
     <div class="form-group">
     <label for="username" class="col-sm-2 control-label">用户名</label>
       <div class="col-sm-10">
@@ -30,19 +30,18 @@
         <input type="text" class="form-control" id="pwd" placeholder="密码" name="pwd">
       </div>
     </div>
+    
+    <div class="form-group">
+  <label for="pwd1" class="col-sm-2 control-label">确认密码</label>
+  <div class="col-sm-10">
+    <input type="text" class="form-control" id="pwd1" placeholder="确认密码" name="pwd1" >
+  </div>
+</div> 
+
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
-        <div class="checkbox">
-          <label>
-            <input type="checkbox">请记住我
-          </label>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-default" id="login">登录</button>
-        <a href="/register" class="btn btn-default">注册</a>
+        <button type="submit" class="btn btn-default" id='register'>注册</button>
+        <a href="/" class="btn btn-default">登录</a>
       </div>
     </div>
   </form>
@@ -52,34 +51,38 @@
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript">
 $(function(){
-  $('#login').click(function(){
-     const username = $('#username').val();
-     const pwd = $('#pwd').val();
-     console.log(username);
-    console.log(pwd);
-     const data = {'username':username,'pwd':pwd};
-  
-   $.ajax({
-       url:'/',
-      type:'POST',
-      data: data,
-      success: function(result,status){ 
+  $('#register').click(function(){
+    const username = $('#username').val();
+    const pwd = $("#pwd").val();
+    const pwd1 = $("#pwd1").val();
+      if(!username){
+         $("#username").css("border","1px solid red");
+         alert('用户名不能为空');
+         return;
+      } else if(!pwd){
+        alert('密码不能为空');
+      } else if(pwd != pwd1){
+       $("#pwd").css("border","1px solid red");
+       $("#pwd1").css("border","1px solid red");
+       alert("两次输入密码不一致!");
+    } else {
+      const data = {'username':username,'pwd':pwd}
+        $.ajax({
+            url:'/register',
+            data:data,
+            type:'post',
+            success: function(data,status){ 
                     if(status == 'success'){ 
-                    location.href = '/chatroom';
-                    }
-                },
-                error: function(result,status){ 
-                    if(status == 'error'){ 
                         location.href = '/';
                     }
+                },
+              error: function(data,err){ 
+                        location.href = 'register';
                 }
-    });
-
+        });
+    }
   });
- 
-   
 });
-
 </script>
 </body>
 </html>

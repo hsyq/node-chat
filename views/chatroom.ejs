@@ -8,12 +8,24 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <style>
-.container{
-  height: 100%;
-}
-.liaotiankuang {
-  height: 70%;
-}
+  .container{
+    height: 100%;
+  }
+  .chat_area  .chat_main{
+    overflow-y:scroll; 
+    background-color: rgb(199,237,204);
+  }
+
+  #chat_content li{
+    padding: 10px 0 0 10px;
+  }
+
+  .chat_area ul {
+    height: 430px;
+  }
+
+
+
   #input {
     width: 100%;
   }
@@ -23,55 +35,84 @@
   <div class="row clearfix">
     <div class="col-md-12 column">
       <h3 class="text-success">
-       欢迎来到聊天室,<span id='username'><%=user%> </span>
+       欢迎来到聊天室,<span id='username'><%=user.username%></span>
      </h3>
    </div>
  </div>
- <div class="row clearfix liaotiankuang">
+ <div class="row clearfix chat_area">
   <div class="col-md-12 column">
-
-    <div class="panel panel-default">
+    <div class="panel panel-default chat_main">
       <div class="panel-body">
        <ul class="list-unstyled" id="chat_content">
        </ul>
      </div>
    </div>
 
- </div>
-</div>
-<div class="row clearfix caozuo">
-  <div class="col-md-12 column">
-
-
    <div class="panel panel-default">
-      <div class="panel-body">
-         
-            <input type="text" class="form-control" id='input'>
-           
-   <button type="button" class="btn btn-default" id='send'>发送</button>
-     </div>
-   </div>
-   
+    <div class="panel-body">
+      <div class="input-group">
+        <input type="text" class="form-control" id='input'>
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" id="send">发送</button>
+        </span>
+      </div>
+    </div>
   </div>
+
 </div>
+</div>
+
 </div>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/util.js"></script>
 <script type="text/javascript">
   const socket = io();
+  //const time = new Date().Format("yyyy-MM-dd HH:mm:ss");
+  //const hour = time.getHours();
+  //const min = time.getMinutes();
+  //const seconds = time.getSeconds();
+  
+
+
   $('#send').click(function(){
-      //console.log('333');
+    //console.log('333');
+    //console.log(time);
       const val = $("#input").val();
-      const username = $('#username').html();
+      if(!val){
+
+      }else{
+        const username = $('#username').html();
+        const msgObj = {
+        'user':username,
+        'content':val
+         }
+       socket.emit('client',msgObj);
+       $("#input").val('');
+      } 
+   });
+
+  $("#input").keydown(function(e){
+
+      const val = $("#input").val();
+      if(!val){
+         
+      }else {
+const username = $('#username').html();
       const msgObj = {
         'user':username,
         'content':val
       }
-     // console.log(val);
-     socket.emit('client',msgObj);
-     $("#input").val('');
-   });
+      if(e.keyCode == 13){
+        
+        //把文本框的内容上传：
+        socket.emit("client",msgObj);
+        $(this).val('');
+      }
+      }
+      
+    });
 
   socket.on("client",function(msg){
     $("#chat_content").append("<li><b>"+msg.user+":</b>"+ msg.content + "</li>");

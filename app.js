@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const index = require('./routes/index.js');
+const register = require('./routes/register.js');
 const check = require('./routes/check.js');
 const chatroom = require('./routes/chatroom.js');
 
@@ -27,6 +28,7 @@ app.use(session({
 app.use(express.static('./public'));
 
 app.use('/',index);
+app.use('/register',register);
 app.use('/check',check);
 app.use('/chatroom',chatroom);
 
